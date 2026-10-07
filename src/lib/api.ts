@@ -1,6 +1,6 @@
 import type { Pagination } from './types';
 
-const BASE = ((import.meta.env.VITE_API_URL as string | undefined) ?? '').replace(/\/$/, '');
+const BASE = ((import.meta.env.API_URL as string | undefined) ?? '').replace(/\/$/, '');
 const TOKEN_KEY = 'sabino-control.token';
 
 // sessionStorage on purpose: the session ends when the tab closes. This console
@@ -35,7 +35,7 @@ export async function api<T>(path: string, { method = 'GET', body, query }: Opts
       body: body === undefined ? undefined : JSON.stringify(body),
     });
   } catch {
-    throw new ApiError('Can’t reach the server. Check your connection and the VITE_API_URL setting.', 0);
+    throw new ApiError('Can’t reach the server. Check your connection and the API_URL setting.', 0);
   }
   const json = await res.json().catch(() => null);
   if (!res.ok || json?.success === false) {
@@ -46,7 +46,7 @@ export async function api<T>(path: string, { method = 'GET', body, query }: Opts
     throw new ApiError(json?.error || fallback, res.status, json?.code);
   }
   if (json === null) {
-    throw new ApiError('The server sent a reply the console can’t read. Check that VITE_API_URL points at your backend.', res.status);
+    throw new ApiError('The server sent a reply the console can’t read. Check that API_URL points at your backend.', res.status);
   }
   return json as ApiResult<T>;
 }
